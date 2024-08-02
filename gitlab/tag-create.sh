@@ -66,7 +66,7 @@ new_version="$major.$minor.$patch"
 git checkout -b $new_branch
 
 # use one of options below to make a new tag
-# git tag -a v$new_version
+# git tag -a v$new_version -m "$message"
 npm version $new_version
 # yarn version --new-version $new_version
 
