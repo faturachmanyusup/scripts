@@ -33,7 +33,7 @@ git pull
 # get latest tag
 latest_tag=$(git tag -l | tail -1)
 
-# remove "v" from tag to get the latest version
+# remove "v" from latest tag to get the latest version
 latest_version="${latest_tag//v}"
 
 # split version by .
@@ -60,16 +60,15 @@ fi
 prefix_branch=release
 
 new_branch=$prefix_branch/$major.$minor.$patch
-new_version="v$major.$minor.$patch"
+new_version="$major.$minor.$patch"
 
 # create new branch and checkout to it
 git checkout -b $new_branch
 
-# use git for creating tag
-# git tag -a $new_version
-
-# OR use npm for creating tag
+# use one of options below to make a new tag
+# git tag -a v$new_version
 npm version $new_version
+# yarn version --new-version $new_version
 
 # push current branch (new branch)
 git push origin $(git branch --show-current)
@@ -84,7 +83,7 @@ rest=${repo_url#*$searchstring}
 start_idx=$((${#repo_url} - ${#rest} + 1))
 path=${repo_url:start_idx:-4}
 
-tag_link="https://gitlab.com/$path/-/tags/$new_version"
+tag_link="https://gitlab.com/$path/-/tags/v$new_version"
 
 echo Tag was published successfully.
 echo ""
