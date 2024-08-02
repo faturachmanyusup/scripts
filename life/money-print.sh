@@ -1,0 +1,1 @@
+printf money\\n
