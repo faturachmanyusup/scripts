@@ -21,14 +21,14 @@ print_suggestion() {
 }
 
 # validate changes type
-if [ changes_type == "" ] || [ changes_type != "major" -a changes_type != "minor" -a changes_type != "patch" ]
+if [ $changes_type == "" ] || [ $changes_type != "major" -a $changes_type != "minor" -a $changes_type != "patch" ]
 then
   print_suggestion
   return 1
 fi
 
-git checkout staging
-git pull
+# git checkout staging
+# git pull
 
 # get latest tag
 latest_tag=$(git tag -l | tail -1)
@@ -43,15 +43,17 @@ latest_version_arr=(${latest_version//./ })
 major=${latest_version_arr[0]}
 minor=${latest_version_arr[1]}
 patch=${latest_version_arr[2]}
-patch=${latest_version_arr[2]}
 
 # update version based on changes type given
-if [ changes_type == "major" ]
+if [ $changes_type == "major" ]
 then
   major=$(( major + 1 ))
-elif [ changes_type == "minor" ]
+  minor="0"
+  patch="0"
+elif [ $changes_type == "minor" ]
 then
   minor=$(( minor + 1 ))
+  patch="0"
 else
   patch=$(( patch + 1 ))
 fi
@@ -59,13 +61,13 @@ fi
 # value of line below depends on project's naming convention
 prefix_branch=release
 
-new_branch=$prefix_branch/$major.$minor.$patch
 new_version="$major.$minor.$patch"
+new_branch=$prefix_branch/$new_version
 
 # create new branch and checkout to it
 git checkout -b $new_branch
 
-# use one of options below to make a new tag
+# use one of below options to make a new tag
 # git tag -a v$new_version -m "$message"
 npm version $new_version
 # yarn version --new-version $new_version

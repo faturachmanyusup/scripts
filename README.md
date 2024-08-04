@@ -1,1 +1,1 @@
-![Yes](./image.jpeg)
+![Yes](./image.png)
