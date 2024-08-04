@@ -27,8 +27,8 @@ then
   return 1
 fi
 
-# git checkout staging
-# git pull
+git checkout staging
+git pull
 
 # get latest tag
 latest_tag=$(git tag -l | tail -1)
@@ -68,8 +68,8 @@ new_branch=$prefix_branch/$new_version
 git checkout -b $new_branch
 
 # use one of below options to make a new tag
-# git tag -a v$new_version -m "$message"
-npm version $new_version
+git tag -a v$new_version -m "$message"
+# npm version $new_version
 # yarn version --new-version $new_version
 
 # push current branch (new branch)
