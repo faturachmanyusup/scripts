@@ -32,21 +32,21 @@ export TITLE=$(git log -1 --pretty=%B)
 # Use current branch as source branch
 export SOURCE_BRANCH=$(git branch --show-current)
 
-# Uncomment line below and fill its value or pass it to terminal / bash
-# export TARGET_BRANCH=""
+# Use first argument as target branch
+export TARGET_BRANCH=$1
 
 # Validate TARGET_BRANCH
 if [ "$TARGET_BRANCH" = "" ]
 then
   echo -e "${red}Error: TARGET_BRANCH should not be empty.${no_color}"
   echo -e ""
-  echo -e "You can set TARGET_BRANCH using "'"export TARGET_BRANCH=<VALUE>"'""
+  echo -e "mr-create.sh <TARGET_BRANCH>"
 
   return 1
 fi
 
 # Gitlab Numeric User IDs
-# Gitlab numeric User ID can be found in https://gitlab.com/api/v4/users?username=<USERNAME>
+# Gitlab numeric User ID can be found on https://gitlab.com/api/v4/users?username=<USERNAME>
 export ASSIGNEE_ID=123456
 export REVIEWER_ID=567890
 
@@ -97,4 +97,4 @@ echo "MR successfully created. Your MR ready on:"
 echo ""
 echo $mr_link
 
-return $mr_link
+return 0
