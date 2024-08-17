@@ -13,15 +13,15 @@ print_suggestion() {
   echo -e "${red}Error: Invalid command.${default}"
   echo -e ""
   echo -e "Available commands"
-  echo -e "   tag-create.sh major"
-  echo -e "   tag-create.sh minor"
-  echo -e "   tag-create.sh patch"
+  echo -e "  . tag-create.sh major"
+  echo -e "  . tag-create.sh minor"
+  echo -e "  . tag-create.sh patch"
 
   return 1
 }
 
 # validate changes type
-if [ $changes_type == "" ] || [ $changes_type != "major" -a $changes_type != "minor" -a $changes_type != "patch" ]
+if [ "$changes_type" == "" ] || [ "$changes_type" != "major" -a "$changes_type" != "minor" -a "$changes_type" != "patch" ]
 then
   print_suggestion
   return 1
