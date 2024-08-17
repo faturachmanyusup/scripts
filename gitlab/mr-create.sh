@@ -40,7 +40,7 @@ if [ "$TARGET_BRANCH" = "" ]
 then
   echo -e "${red}Error: TARGET_BRANCH should not be empty.${no_color}"
   echo -e ""
-  echo -e "mr-create.sh <TARGET_BRANCH>"
+  echo -e ". mr-create.sh <TARGET_BRANCH>"
 
   return 1
 fi
