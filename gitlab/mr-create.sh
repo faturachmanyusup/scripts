@@ -32,15 +32,25 @@ export TITLE=$(git log -1 --pretty=%B)
 # Use current branch as source branch
 export SOURCE_BRANCH=$(git branch --show-current)
 
-# Use first argument as target branch
-export TARGET_BRANCH=$1
+# Use third argument (if any) or take first argument as target branch
+export TARGET_BRANCH=$3
+if [ "$TARGET_BRANCH" == "" ]
+then
+  TARGET_BRANCH=$1
+fi
+
+echo $TARGET_BRANCH
 
 # Validate TARGET_BRANCH
 if [ "$TARGET_BRANCH" = "" ]
 then
   echo -e "${red}Error: TARGET_BRANCH should not be empty.${no_color}"
   echo -e ""
-  echo -e ". mr-create.sh <TARGET_BRANCH>"
+  echo -e "With installation:"
+  echo -e "  scripts mr-create gitlab <TARGET_BRANCH>"
+  echo -e ""
+  echo -e "Without installation:"
+  echo -e "  . mr-create.sh <TARGET_BRANCH>"
 
   return 1
 fi

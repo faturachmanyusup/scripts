@@ -1,8 +1,17 @@
 # ONLY SUPPORT SEMANTIC VERSION
 
 # declare arguments as variables to make it clear
-changes_type=$1
-message=$2
+changes_type=$3
+if [ "$changes_type" == "" ]
+then
+  changes_type=$1
+fi
+
+message=$4
+if [ "$message" == "" ]
+then
+  message=$2
+fi
 
 # declare colors
 red='\033[0;31m'
@@ -12,7 +21,12 @@ default='\033[0m'
 print_suggestion() {
   echo -e "${red}Error: Invalid command.${default}"
   echo -e ""
-  echo -e "Available commands"
+  echo -e "Available commands with installation"
+  echo -e "  scripts gitlab tag-create major"
+  echo -e "  scripts gitlab tag-create minor"
+  echo -e "  scripts gitlab tag-create patch"
+  echo -e ""
+  echo -e "Available commands without installation"
   echo -e "  . tag-create.sh major"
   echo -e "  . tag-create.sh minor"
   echo -e "  . tag-create.sh patch"
