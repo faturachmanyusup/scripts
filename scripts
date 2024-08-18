@@ -47,3 +47,5 @@ fi
 
 # execute file
 . $lib_path/$provider/$action.sh
+
+return 0

@@ -23,3 +23,5 @@ printf "Setting permissions       "
 chmod -R +x /lib/scripts
 chmod +x /bin/scripts
 printf $msg_success
+
+return 0
