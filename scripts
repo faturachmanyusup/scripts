@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# Autocomplete is not implemented yet. Will be implemented in the future. Probably 🤷‍♂️
+
+# declare colors
+red='\033[0;31m'
+default='\033[0m'
+
+# declare arguments as variables to make it clear
+provider=$1
+action=$2
+
+# declare lib path
+lib_path=/lib/scripts
+
+# validate command
+if [ -z "${provider}" ] || [ -z "${action}" ]
+then
+  echo "${red}Error: Invalid command.${default}"
+  echo ""
+  echo "Valid command:"
+  echo "scripts <provider> <action>"
+
+  return 1
+fi
+
+# validate first argument
+folder_exists=$(find $lib_path -type d -name "$provider")
+if [ -z "${folder_exists}" ]
+then
+  echo "${red}Error: Unknown argument $provider.${default}"
+  echo ""
+  echo "First argument should one of these options:"
+  echo "clickup gitlab life ms-teams"
+
+  return 1
+fi
+
+# validate second argument
+file_exists=$(find $lib_path -name "$action.sh")
+if [ -z "${file_exists}" ]
+then
+  echo "${red}Error: Unknown argument $action.${default}"
+
+  return 1
+fi
+
+# execute file
+. $lib_path/$provider/$action.sh
