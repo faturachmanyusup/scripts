@@ -16,33 +16,33 @@ lib_path=/lib/scripts
 # validate command
 if [ -z "${provider}" ] || [ -z "${action}" ]
 then
-  printf "${red}Error: Invalid command.${default}"
-  printf ""
-  printf "Valid command:"
-  printf "scripts <provider> <action>"
+  printf "${red}Error: Invalid command.${default}\\n"
+  printf "\\n"
+  printf "Valid command:\\n"
+  printf "scripts <provider> <action>\\n"
 
-  return 1
+  exit 2
 fi
 
 # validate first argument
 folder_exists=$(find $lib_path -type d -name "$provider")
 if [ -z "${folder_exists}" ]
 then
-  printf "${red}Error: Unknown argument $provider.${default}"
-  printf ""
-  printf "First argument should one of these options:"
-  printf "clickup gitlab life ms-teams"
+  printf "${red}Error: Unknown argument $provider.${default}\\n"
+  printf "\\n"
+  printf "First argument should one of these options:\\n"
+  printf "clickup gitlab life ms-teams\\n"
 
-  return 1
+  exit 2
 fi
 
 # validate second argument
 file_exists=$(find $lib_path -name "$action.sh")
 if [ -z "${file_exists}" ]
 then
-  printf "${red}Error: Unknown argument $action.${default}"
+  printf "${red}Error: Unknown argument $action.${default}\\n"
 
-  return 1
+  exit 2
 fi
 
 # execute file
