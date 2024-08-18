@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export GITLAB_PRIVATE_TOKEN=$GITLAB_PRIVATE_TOKEN
 export red='\033[0;31m'
 export no_color='\033[0m'
@@ -5,11 +7,11 @@ export no_color='\033[0m'
 # Validate GITLAB_PRIVATE_TOKEN
 if [ "$GITLAB_PRIVATE_TOKEN" = "" ]
 then
-  echo -e "${red}Error: GITLAB_PRIVATE_TOKEN should not be empty.${no_color}"
-  echo -e ""
-  echo -e "You can set GITLAB_PRIVATE_TOKEN using "'"export GITLAB_PRIVATE_TOKEN=<VALUE>"'""
+  printf "${red}Error: GITLAB_PRIVATE_TOKEN should not be empty.${no_color}\\n"
+  printf "\\n"
+  printf "You can set GITLAB_PRIVATE_TOKEN using "'"export GITLAB_PRIVATE_TOKEN=<VALUE>"'"\\n"
 
-  return 1
+  exit 2
 fi
 
 # Get PROJECT_ID from git config
@@ -19,11 +21,11 @@ export PROJECT_ID=$(git config --worktree --get remote.origin.projectid)
 # Validate PROJECT_ID
 if [ "$PROJECT_ID" = "" ]
 then
-  echo -e "${red}Error: PROJECT_ID should not be empty.${no_color}"
-  echo -e ""
-  echo -e "You can set PROJECT_ID using "'"git config --worktree --add remote.origin.projectid <VALUE>"'""
+  printf "${red}Error: PROJECT_ID should not be empty.${no_color}\\n"
+  printf "\\n"
+  printf "You can set PROJECT_ID using "'"git config --worktree --add remote.origin.projectid <VALUE>"'"\\n"
 
-  return 1
+  exit 2
 fi
 
 # Use current branch's latest commit message as MR title
@@ -32,27 +34,25 @@ export TITLE=$(git log -1 --pretty=%B)
 # Use current branch as source branch
 export SOURCE_BRANCH=$(git branch --show-current)
 
-# Use third argument (if any) or take first argument as target branch
+# Take second argument ($3) as target branch if it's not invoked directly, otherwise take first argument ($1).
 export TARGET_BRANCH=$3
-if [ "$TARGET_BRANCH" == "" ]
+if [ "$0" == "mr-create.sh" ]
 then
   TARGET_BRANCH=$1
 fi
 
-echo $TARGET_BRANCH
-
 # Validate TARGET_BRANCH
 if [ "$TARGET_BRANCH" = "" ]
 then
-  echo -e "${red}Error: TARGET_BRANCH should not be empty.${no_color}"
-  echo -e ""
-  echo -e "With installation:"
-  echo -e "  scripts mr-create gitlab <TARGET_BRANCH>"
-  echo -e ""
-  echo -e "Without installation:"
-  echo -e "  . mr-create.sh <TARGET_BRANCH>"
+  printf "${red}Error: TARGET_BRANCH should not be empty.${no_color}\\n"
+  printf "\\n"
+  printf "With installation:\\n"
+  printf "  scripts mr-create gitlab <TARGET_BRANCH>\\n"
+  printf "\\n"
+  printf "Without installation:\\n"
+  printf "  . mr-create.sh <TARGET_BRANCH>\\n"
 
-  return 1
+  exit 2
 fi
 
 # Gitlab Numeric User IDs
@@ -83,11 +83,11 @@ then
   red='\033[0;31m'
   err_msg=$(echo $response | jq -r '.message')
 
-  echo -e "${red}Error: MR cannot be created."
-  echo ""
-  echo "reason: $err_msg"
+  printf "${red}Error: MR cannot be created.\\n"
+  printf "\\n"
+  printf "reason: $err_msg\\n"
 
-  return 1
+  exit 2
 fi
 
 # Get repo_url from git config
@@ -103,8 +103,8 @@ path=${repo_url:start_idx:-4}
 mr_link="https://gitlab.com/$path/-/merge_requests/$mr_id"
 
 # Print it to terminal / bash
-echo "MR successfully created. Your MR ready on:"
-echo ""
-echo $mr_link
+printf "Hello @everyone, please help me to review my work.\\n"
+printf "\\n"
+printf "$mr_link\\n"
 
-return 0
+exit 0

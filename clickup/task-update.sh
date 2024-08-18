@@ -1,3 +1,5 @@
+#!/bin/bash
+
 red='\033[0;31m'
 no_color='\033[0m'
 
@@ -7,9 +9,9 @@ status=$STATUS
 # Validate CU_PERSONAL_TOKEN
 if [ "$CU_PERSONAL_TOKEN" = "" ]
 then
-  echo -e "${red}Error: CU_PERSONAL_TOKEN should not be empty."
-  echo -e "${no_color}"
-  echo -e "You can set CU_PERSONAL_TOKEN using "'"export CU_PERSONAL_TOKEN=<VALUE>"'""
+  printf "${red}Error: CU_PERSONAL_TOKEN should not be empty.\\n"
+  printf "${no_color}\\n"
+  printf "You can set CU_PERSONAL_TOKEN using "'"export CU_PERSONAL_TOKEN=<VALUE>"'"\\n"
 
   return 1
 fi
@@ -17,9 +19,9 @@ fi
 # Validate TASK IDs
 if [ "$task_ids" = "" ]
 then
-  echo -e "${red}Error: TARGET_TASKS should not be empty."
-  echo -e "${no_color}"
-  echo -e "You can set TARGET_TASKS using "'"export TARGET_TASKS=<VALUE>"'""
+  printf "${red}Error: TARGET_TASKS should not be empty.\\n"
+  printf "${no_color}\\n"
+  printf "You can set TARGET_TASKS using "'"export TARGET_TASKS=<VALUE>"'"\\n"
 
   return 1
 fi
@@ -27,9 +29,9 @@ fi
 #Validate status
 if [ "$status" = "" ]
 then
-  echo -e "${red}Error: STATUS should not be empty."
-  echo -e "${no_color}"
-  echo -e "You can set STATUS using "'"export STATUS=<VALUE>"'""
+  printf "${red}Error: STATUS should not be empty.\\n"
+  printf "${no_color}\\n"
+  printf "You can set STATUS using "'"export STATUS=<VALUE>"'"\\n"
 
   return 1
 fi
@@ -51,9 +53,9 @@ do
   # Validate response. If response is HTML, it means error.
   if [ "$last_line_res" = "</html>" ]
   then
-    echo -e "${red}Failed to update task with ID $i."
-    echo -e "${no_color}"
-    echo -e "Note: Task ID should not include #"
+    printf "${red}Failed to update task with ID $i.\\n"
+    printf "${no_color}\\n"
+    printf "Note: Task ID should not include #\\n"
 
     return 1
   fi
@@ -72,11 +74,11 @@ do
   fi
 
   # Print some informations
-  echo "Status has been updated to $status for:"
-  echo "$name #$id"
-  echo ""
-  echo "Parent url: $parent_url"
-  echo "Task url: $url"
+  printf "Status has been updated to $status for:\\n"
+  printf "$name #$id\\n"
+  printf "\\n"
+  printf "Parent url: $parent_url\\n"
+  printf "Task url: $url\\n"
 done
 
 return 0

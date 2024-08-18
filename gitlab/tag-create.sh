@@ -1,44 +1,42 @@
+#!/bin/bash
+
 # ONLY SUPPORT SEMANTIC VERSION
 
-# declare arguments as variables to make it clear
+# declare variables
+red='\033[0;31m'
+default='\033[0m'
 changes_type=$3
-if [ "$changes_type" == "" ]
+message=$4
+
+# change some variables if it's invoked directly (without installation).
+if [ "$0" == "tag-create.sh" ]
 then
   changes_type=$1
-fi
-
-message=$4
-if [ "$message" == "" ]
-then
   message=$2
 fi
 
-# declare colors
-red='\033[0;31m'
-default='\033[0m'
-
 # wrap these outputs inside a function to make it cool 😎 
 print_suggestion() {
-  echo -e "${red}Error: Invalid command.${default}"
-  echo -e ""
-  echo -e "Available commands with installation"
-  echo -e "  scripts gitlab tag-create major"
-  echo -e "  scripts gitlab tag-create minor"
-  echo -e "  scripts gitlab tag-create patch"
-  echo -e ""
-  echo -e "Available commands without installation"
-  echo -e "  . tag-create.sh major"
-  echo -e "  . tag-create.sh minor"
-  echo -e "  . tag-create.sh patch"
+  printf "${red}Error: Invalid command.${default}\\n"
+  printf "\\n"
+  printf "Available commands with installation\\n"
+  printf "  scripts gitlab tag-create major\\n"
+  printf "  scripts gitlab tag-create minor\\n"
+  printf "  scripts gitlab tag-create patch\\n"
+  printf "\\n"
+  printf "Available commands without installation\\n"
+  printf "  . tag-create.sh major\\n"
+  printf "  . tag-create.sh minor\\n"
+  printf "  . tag-create.sh patch\\n"
 
-  return 1
+  return 0
 }
 
 # validate changes type
 if [ "$changes_type" == "" ] || [ "$changes_type" != "major" -a "$changes_type" != "minor" -a "$changes_type" != "patch" ]
 then
   print_suggestion
-  return 1
+  exit 2
 fi
 
 git checkout staging
@@ -101,8 +99,8 @@ path=${repo_url:start_idx:-4}
 
 tag_link="https://gitlab.com/$path/-/tags/v$new_version"
 
-echo Tag was published successfully.
-echo ""
-echo see $tag_link
+printf "Tag was published successfully.\\n"
+printf "\\n"
+printf "see $tag_link\\n"
 
-return 0
+exit 0

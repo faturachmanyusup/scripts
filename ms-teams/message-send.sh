@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Uncomment line below and fill its value or pass it to terminal / bash
 # export CHAT_ID=""
 
