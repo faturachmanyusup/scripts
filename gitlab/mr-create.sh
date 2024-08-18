@@ -103,7 +103,7 @@ path=${repo_url:start_idx:-4}
 mr_link="https://gitlab.com/$path/-/merge_requests/$mr_id"
 
 # Print it to terminal / bash
-printf "MR successfully created. Your MR ready on:\\n"
+printf "Hello @everyone, please help me to review my work.\\n"
 printf "\\n"
 printf "$mr_link\\n"
 

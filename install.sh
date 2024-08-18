@@ -4,10 +4,10 @@ msg_success="✔\\n"
 
 printf "Installing dependencies   "
 apt-get update -qq
-apt-get install -qq rsync curl unzip jq -y > /dev/null
+apt-get install -qq rsync curl jq -y > /dev/null
 printf $msg_success
 
-printf "Building sources          "
+printf "Building resources        "
 rsync -r \
   . /lib/scripts \
   --exclude .git \
