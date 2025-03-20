@@ -50,6 +50,6 @@ then
 fi
 
 # execute file
-exec bash -i $lib_path/$provider/$action.sh "$@"
+bash -i $lib_path/$provider/$action.sh "$@"
 
 exit 0
