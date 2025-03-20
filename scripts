@@ -11,13 +11,12 @@ provider=$1
 action=$2
 
 # declare lib path
-lib_path=/lib/scripts
+lib_path=/usr/local/lib/scripts
 
 # validate command
-if [ -z "${provider}" ] || [ -z "${action}" ]
+if [ -z "$provider" ] || [ -z "$action" ]
 then
-  printf "${red}Error: Invalid command.${default}\\n"
-  printf "\\n"
+  printf "${red}Error: Invalid command.${default}\\n\\n"
   printf "Valid command:\\n"
   printf "scripts <provider> <action>\\n"
 
@@ -25,13 +24,14 @@ then
 fi
 
 # validate first argument
-folder_exists=$(find $lib_path -type d -name "$provider")
+folder_exists=$(find "$lib_path" -type d -name "$provider")
 if [ -z "${folder_exists}" ]
 then
-  printf "${red}Error: Unknown argument $provider.${default}\\n"
-  printf "\\n"
-  printf "First argument should one of these options:\\n"
-  printf "clickup gitlab life ms-teams\\n"
+  printf "${red}Error: Unknown argument $provider.${default}\\n\\n"
+  printf "First argument should be one of these options:\\n"
+  for dir in "$lib_path"/*/; do
+    [ -d "$dir" ] && echo "- $(basename "$dir")"
+  done
 
   exit 2
 fi
@@ -40,12 +40,16 @@ fi
 file_exists=$(find $lib_path -name "$action.sh")
 if [ -z "${file_exists}" ]
 then
-  printf "${red}Error: Unknown argument $action.${default}\\n"
+  printf "${red}Error: Unknown argument $action.${default}\\n\\n"
+  printf "Second argument should be one of these options:\\n"
+  for file in "$lib_path/$provider"/*.sh; do
+    [ -f "$file" ] && echo "- $(basename "$file" .sh)"
+  done
 
   exit 2
 fi
 
 # execute file
-bash -i $lib_path/$provider/$action.sh $@
+exec bash -i $lib_path/$provider/$action.sh "$@"
 
 exit 0
