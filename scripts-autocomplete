@@ -16,7 +16,7 @@ _scripts_autocomplete() {
   # Get the actions for the selected provider (second argument suggestions)
   if [[ $COMP_CWORD -eq 2 ]]
   then
-    # If provider already typed and exits
+    # If provider already typed and exists
     if [[ -d "$lib_path/$prev" ]]
     then
       # Store available actions under typed provider
