@@ -1,0 +1,37 @@
+#!/bin/bash
+
+_scripts_autocomplete() {
+  # Entrypoint location
+  local lib_path="/usr/local/lib/scripts"
+
+  # Current word (currently being typed)
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  # Previous word (word before $cur)
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  # Get the list of providers (first argument suggestions)
+  local providers=$(ls -1 "$lib_path")
+
+  # Get the actions for the selected provider (second argument suggestions)
+  if [[ $COMP_CWORD -eq 2 ]]
+  then
+    # If provider already typed and exits
+    if [[ -d "$lib_path/$prev" ]]
+    then
+      # Store available actions under typed provider
+      actions=$(ls -1 "$lib_path/$prev" | sed 's/\.sh$//')
+    fi
+
+    # Search actions that match $cur
+    COMPREPLY=( $(compgen -W "$actions" -- "$cur") )
+
+    return
+  fi
+
+  # Default to suggesting providers
+  COMPREPLY=( $(compgen -W "$providers" -- "$cur") )
+}
+
+# Register the completion function for the "scripts" command
+complete -F _scripts_autocomplete scripts
