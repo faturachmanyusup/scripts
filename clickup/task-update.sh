@@ -13,7 +13,7 @@ then
   printf "${no_color}\\n"
   printf "You can set CU_PERSONAL_TOKEN using "'"export CU_PERSONAL_TOKEN=<VALUE>"'"\\n"
 
-  return 1
+  exit 2
 fi
 
 # Validate TASK IDs
@@ -23,7 +23,7 @@ then
   printf "${no_color}\\n"
   printf "You can set TARGET_TASKS using "'"export TARGET_TASKS=<VALUE>"'"\\n"
 
-  return 1
+  exit 2
 fi
 
 #Validate status
@@ -33,7 +33,7 @@ then
   printf "${no_color}\\n"
   printf "You can set STATUS using "'"export STATUS=<VALUE>"'"\\n"
 
-  return 1
+  exit 2
 fi
 
 # Loop for Task IDs
@@ -57,7 +57,7 @@ do
     printf "${no_color}\\n"
     printf "Note: Task ID should not include #\\n"
 
-    return 1
+    exit 2
   fi
 
   # Get variables
@@ -81,4 +81,4 @@ do
   printf "Task url: $url\\n"
 done
 
-return 0
+exit 0
