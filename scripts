@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Autocomplete is not implemented yet. Will be implemented in the future. Probably 🤷‍♂️
-
 # declare colors
 red='\033[0;31m'
 default='\033[0m'
