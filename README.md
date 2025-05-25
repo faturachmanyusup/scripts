@@ -23,6 +23,44 @@ To install, run:
 sudo ./install.sh
 ```
 
+## Uninstallation
+To remove the scripts and all associated components, use the uninstall script:
+
+```bash
+# First, make the script executable
+chmod +x uninstall.sh
+
+# Then run it with sudo
+sudo ./uninstall.sh
+```
+
+The uninstall script will:
+- Remove all scripts from `/usr/local/lib/scripts`
+- Remove the `scripts` command from `/usr/local/bin`
+- Remove the auto-completion script from `/etc/bash_completion.d/`
+- Clean up the entries added to `~/.bashrc`
+
+The uninstall script supports the following options:
+```
+  -h, --help     Display help message
+  -y, --yes      Skip confirmation prompt
+  -v, --verbose  Show detailed output
+```
+
+Example usage:
+```bash
+# Uninstall with confirmation prompt
+sudo ./uninstall.sh
+
+# Uninstall without confirmation prompt
+sudo ./uninstall.sh -y
+
+# Uninstall with verbose output
+sudo ./uninstall.sh -v
+```
+
+Make sure to run the script with root privileges.
+
 ## Available Scripts
 
 ### GitLab Integration
