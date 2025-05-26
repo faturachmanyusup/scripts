@@ -37,16 +37,25 @@ printf "%b" "$msg_success"
 
 printf "Building resources        "
 mkdir -p $usr_local/lib/scripts  # Ensure the directory exists
+
+# Copy all script files to /usr/local/lib/scripts
+# The 'scripts' file and 'scripts-autocomplete' are excluded as they go to different locations
 rsync -a . $usr_local/lib/scripts \
   --exclude=".git" \
   --exclude="*.png" \
   --exclude="README.md" \
+  --exclude="install.sh" \
+  --exclude="uninstall.sh" \
   --exclude="scripts" \
   --exclude="scripts-autocomplete"
+
+# Copy the main executable to /usr/local/bin
+mkdir -p $usr_local/bin
+rsync -a scripts $usr_local/bin
 printf "%b" "$msg_success"
 
 printf "Registering keyword       "
-rsync -a scripts $usr_local/bin
+# Copy the autocomplete script to /etc/bash_completion.d/
 _register_scripts_autocomplete
 printf "%b" "$msg_success"
 
