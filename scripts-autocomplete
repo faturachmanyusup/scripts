@@ -38,6 +38,15 @@ _scripts_autocomplete() {
     return
   fi
 
+  # Handle special case for gitlab mr-create command
+  if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "gitlab" && "${COMP_WORDS[2]}" == "mr-create" ]]; then
+    # If previous word is mr-create or a branch name, suggest -m flag
+    if [[ "$prev" == "mr-create" || "$prev" != "-m" ]]; then
+      COMPREPLY=( $(compgen -W "-m" -- "$cur") )
+      return
+    fi
+  fi
+
   # Default to suggesting providers
   COMPREPLY=( $(compgen -W "$providers" -- "$cur") )
 }

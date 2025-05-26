@@ -8,8 +8,9 @@ Scripts are installed to `/usr/local/lib/scripts` and can be run directly after 
 # Pattern
 scripts <provider> <action>
 
-# Example
-scripts gitlab mr-create <target_branch>
+# Examples
+scripts gitlab mr-create <target_branch> [-m "MR Title"]
+scripts gitlab mr-create -m "MR Title" <target_branch>
 ```
 
 The repository includes an installation script (`install.sh`) that:
@@ -48,13 +49,15 @@ A script to automate merge request creation in GitLab.
 **Features:**
 - Automatically creates merge requests from current branch
 - Uses GitLab API with private token authentication
-- Extracts commit message as MR title
+- Extracts commit message as MR title by default
+- Supports custom MR title with -m flag
 - Supports custom target branch selection
 - Requires `GITLAB_PRIVATE_TOKEN` environment variable
 
 **Usage:**
 ```bash
-mr-create.sh [target-branch]
+mr-create.sh [target-branch] [-m "MR Title"]
+mr-create.sh -m "MR Title" [target-branch]
 ```
 
 ### ClickUp Integration
