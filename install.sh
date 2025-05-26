@@ -44,8 +44,6 @@ rsync -a . $usr_local/lib/scripts \
   --exclude="install.sh" \
   --exclude="scripts" \
   --exclude="scripts-autocomplete"
-# Copy uninstall.sh to the scripts directory
-cp uninstall.sh $usr_local/lib/scripts/
 printf "%b" "$msg_success"
 
 printf "Registering keyword       "
