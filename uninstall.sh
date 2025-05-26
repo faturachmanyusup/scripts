@@ -3,24 +3,19 @@
 # declare colors
 red='\033[0;31m'
 default='\033[0m'
-green='\033[0;32m'
 
 BASHRC="$HOME/.bashrc"
 AUTOCOMPLETE_SCRIPT="/etc/bash_completion.d/scripts-autocomplete"
 
 _remove_autocomplete_from_bashrc() {
-  # Remove the autocomplete sourcing lines from .bashrc if they exist
-  if [ -f "$BASHRC" ]; then
+  # Remove the autocomplete sourcing from ~/.bashrc if it exists
+  if [ -f "$BASHRC" ] && grep -q "$AUTOCOMPLETE_SCRIPT" "$BASHRC"; then
     # Create a temporary file
-    local TEMP_FILE=$(mktemp)
-    
-    # Filter out the lines that source the autocomplete script
-    grep -v "if \[ -f $AUTOCOMPLETE_SCRIPT \]; then" "$BASHRC" | \
-    grep -v "  source $AUTOCOMPLETE_SCRIPT" | \
-    grep -v "fi # Added by scripts installer" > "$TEMP_FILE"
-    
-    # Replace the original .bashrc with our filtered version
-    mv "$TEMP_FILE" "$BASHRC"
+    temp_file=$(mktemp)
+    # Filter out the lines containing the autocomplete script
+    grep -v "$AUTOCOMPLETE_SCRIPT" "$BASHRC" > "$temp_file"
+    # Replace the original file with the filtered content
+    mv "$temp_file" "$BASHRC"
   fi
 }
 
@@ -31,54 +26,25 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-# Parse command line arguments
-VERBOSE=false
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    -v|--verbose)
-      VERBOSE=true
-      shift
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
-
 msg_success="✔\n"
+usr_local=/usr/local/
 
-# Function to print verbose messages
-print_verbose() {
-  if [ "$VERBOSE" = true ]; then
-    echo -e "$1"
-  fi
-}
-
-printf "Removing scripts from system   "
-# Remove the main scripts directory
-if [ -d "/usr/local/lib/scripts" ]; then
-  rm -rf /usr/local/lib/scripts
-  print_verbose "- Removed /usr/local/lib/scripts"
-fi
-
-# Remove the main command
-if [ -f "/usr/local/bin/scripts" ]; then
-  rm -f /usr/local/bin/scripts
-  print_verbose "- Removed /usr/local/bin/scripts"
-fi
-
-# Remove the autocomplete script
-if [ -f "$AUTOCOMPLETE_SCRIPT" ]; then
-  rm -f "$AUTOCOMPLETE_SCRIPT"
-  print_verbose "- Removed $AUTOCOMPLETE_SCRIPT"
-fi
-
-# Remove the autocomplete entries from .bashrc
-_remove_autocomplete_from_bashrc
-print_verbose "- Cleaned up $BASHRC"
-
+printf "Removing scripts from bin directory... "
+rm -f $usr_local/bin/scripts
 printf "%b" "$msg_success"
 
-printf "${green}Scripts have been successfully uninstalled from your system.${default}\n"
+printf "Removing autocomplete script... "
+rm -f $AUTOCOMPLETE_SCRIPT
+printf "%b" "$msg_success"
+
+printf "Removing scripts library... "
+rm -rf $usr_local/lib/scripts
+printf "%b" "$msg_success"
+
+printf "Cleaning up bashrc... "
+_remove_autocomplete_from_bashrc
+printf "%b" "$msg_success"
+
+printf "\n${default}Scripts have been successfully uninstalled.\n"
 
 exit 0

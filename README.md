@@ -24,19 +24,17 @@ sudo ./install.sh
 ```
 
 ## Uninstallation
-To remove the scripts from your system, you can use the uninstall command:
+To remove all installed scripts and configurations, use the uninstall script:
 
-```bash
-sudo scripts uninstall [flag]
-```
-
-Available flags:
-- `-v, --verbose`: Show detailed information about what's being removed
-
-Alternatively, you can run the uninstall script directly:
 ```bash
 sudo ./uninstall.sh
 ```
+
+The uninstall script will:
+- Remove scripts from `/usr/local/bin`
+- Remove the autocomplete script from `/etc/bash_completion.d/`
+- Remove all script files from `/usr/local/lib/scripts`
+- Clean up the autocomplete configuration from `.bashrc`
 
 ## Available Scripts
 
