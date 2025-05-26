@@ -3,6 +3,7 @@
 # declare colors
 red='\033[0;31m'
 default='\033[0m'
+green='\033[0;32m'
 
 # declare arguments as variables to make it clear
 provider=$1
@@ -11,12 +12,33 @@ action=$2
 # declare lib path
 lib_path=/usr/local/lib/scripts
 
+# Special case for uninstall command
+if [ "$provider" = "uninstall" ]; then
+  # Check if the script is run as root
+  if [ "$(id -u)" -ne 0 ]; then
+    printf "${red}Error: Uninstallation must be run as root.${default}\n"
+    printf "hint: sudo scripts uninstall\n"
+    exit 1
+  fi
+  
+  # Execute uninstall script if it exists
+  if [ -f "/usr/local/lib/scripts/uninstall.sh" ]; then
+    bash -i /usr/local/lib/scripts/uninstall.sh "$@"
+  else
+    printf "${red}Error: Uninstall script not found.${default}\n"
+    exit 1
+  fi
+  
+  exit 0
+fi
+
 # validate command
 if [ -z "$provider" ] || [ -z "$action" ]
 then
   printf "${red}Error: Invalid command.${default}\\n\\n"
   printf "Valid command:\\n"
   printf "scripts <provider> <action>\\n"
+  printf "scripts uninstall [flags]\\n"
 
   exit 2
 fi
@@ -30,6 +52,7 @@ then
   for dir in "$lib_path"/*/; do
     [ -d "$dir" ] && echo "- $(basename "$dir")"
   done
+  printf "- uninstall\\n"
 
   exit 2
 fi

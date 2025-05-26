@@ -15,7 +15,7 @@ _register_scripts_autocomplete() {
   if [ ! -f "$BASHRC" ] || ! grep -q "$AUTOCOMPLETE_SCRIPT" "$BASHRC"; then
     echo "if [ -f $AUTOCOMPLETE_SCRIPT ]; then" >> "$BASHRC"
     echo "  source $AUTOCOMPLETE_SCRIPT" >> "$BASHRC"
-    echo "fi" >> "$BASHRC"
+    echo "fi # Added by scripts installer" >> "$BASHRC"
   fi
 }
 
@@ -44,6 +44,8 @@ rsync -a . $usr_local/lib/scripts \
   --exclude="install.sh" \
   --exclude="scripts" \
   --exclude="scripts-autocomplete"
+# Copy uninstall.sh to the scripts directory
+cp uninstall.sh $usr_local/lib/scripts/
 printf "%b" "$msg_success"
 
 printf "Registering keyword       "
@@ -55,6 +57,7 @@ printf "Setting permissions       "
 find $usr_local/lib/scripts -type f -name "*.sh" -exec chmod +x {} \;
 chmod +x $usr_local/bin/scripts
 chmod +x /etc/bash_completion.d/scripts-autocomplete
+chmod +x $usr_local/lib/scripts/uninstall.sh
 printf "%b" "$msg_success"
 
 source "$BASHRC"

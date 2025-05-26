@@ -12,6 +12,15 @@ _scripts_autocomplete() {
 
   # Get the list of providers (first argument suggestions)
   local providers=$(ls -1 "$lib_path")
+  # Add uninstall command to providers
+  providers="$providers uninstall"
+
+  # Handle special case for uninstall command
+  if [[ $COMP_CWORD -eq 2 && "$prev" == "uninstall" ]]; then
+    # Provide flags for uninstall command
+    COMPREPLY=( $(compgen -W "-v --verbose" -- "$cur") )
+    return
+  fi
 
   # Get the actions for the selected provider (second argument suggestions)
   if [[ $COMP_CWORD -eq 2 ]]
