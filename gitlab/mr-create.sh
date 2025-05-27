@@ -28,17 +28,46 @@ then
   exit 2
 fi
 
-# Use current branch's latest commit message as MR title
-export TITLE=$(git log -1 --pretty=%B)
-
 # Use current branch as source branch
 export SOURCE_BRANCH=$(git branch --show-current)
 
-# Take second argument ($3) as target branch if it's not invoked directly, otherwise take first argument ($1).
-export TARGET_BRANCH=$3
-if [ "$0" == "mr-create.sh" ]
-then
-  TARGET_BRANCH=$1
+# Parse arguments
+CUSTOM_TITLE=""
+TARGET_BRANCH=""
+
+# Check if script is invoked directly or through the scripts command
+if [ "$0" == "mr-create.sh" ]; then
+  # Direct invocation
+  args=("$@")
+else
+  # Invocation through scripts command (skip first two arguments: provider and action)
+  args=("${@:3}")
+fi
+
+# Parse arguments
+i=0
+while [ $i -lt ${#args[@]} ]; do
+  if [ "${args[$i]}" == "-m" ]; then
+    # Next argument is the custom title
+    i=$((i+1))
+    if [ $i -lt ${#args[@]} ]; then
+      CUSTOM_TITLE="${args[$i]}"
+    else
+      printf "${red}Error: -m flag requires a title argument.${no_color}\\n"
+      exit 2
+    fi
+  elif [ -z "$TARGET_BRANCH" ]; then
+    # First non-flag argument is the target branch
+    TARGET_BRANCH="${args[$i]}"
+  fi
+  i=$((i+1))
+done
+
+# Set MR title - use custom title if provided, otherwise use latest commit message
+if [ -n "$CUSTOM_TITLE" ]; then
+  export TITLE="$CUSTOM_TITLE"
+else
+  export TITLE=$(git log -1 --pretty=%B)
 fi
 
 # Validate TARGET_BRANCH
@@ -47,10 +76,12 @@ then
   printf "${red}Error: TARGET_BRANCH should not be empty.${no_color}\\n"
   printf "\\n"
   printf "With installation:\\n"
-  printf "  scripts mr-create gitlab <TARGET_BRANCH>\\n"
+  printf "  scripts gitlab mr-create <TARGET_BRANCH> [-m \"MR Title\"]\\n"
+  printf "  scripts gitlab mr-create -m \"MR Title\" <TARGET_BRANCH>\\n"
   printf "\\n"
   printf "Without installation:\\n"
-  printf "  . mr-create.sh <TARGET_BRANCH>\\n"
+  printf "  . mr-create.sh <TARGET_BRANCH> [-m \"MR Title\"]\\n"
+  printf "  . mr-create.sh -m \"MR Title\" <TARGET_BRANCH>\\n"
 
   exit 2
 fi
