@@ -53,12 +53,24 @@ A script to automate merge request creation in GitLab.
 - Supports custom MR title with -m flag
 - Supports custom target branch selection
 - Requires `GITLAB_PRIVATE_TOKEN` environment variable
+- Uses git config for PROJECT_ID and ASSIGNEE_ID
 
 **Usage:**
 ```bash
 mr-create.sh [target-branch] [-m "MR Title"]
 mr-create.sh -m "MR Title" [target-branch]
 ```
+
+**Required Git Configuration:**
+```bash
+# Set your GitLab project ID
+git config --worktree --add remote.origin.projectid <PROJECT_ID>
+
+# Set your GitLab user ID for assignment
+git config --worktree --add remote.origin.assigneeid <ASSIGNEE_ID>
+```
+
+**Note:** GitLab numeric User ID can be found at https://gitlab.com/api/v4/users?username=<USERNAME>
 
 ### ClickUp Integration
 

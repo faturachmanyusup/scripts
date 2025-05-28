@@ -88,7 +88,21 @@ fi
 
 # Gitlab Numeric User IDs
 # Gitlab numeric User ID can be found on https://gitlab.com/api/v4/users?username=<USERNAME>
-export ASSIGNEE_ID=123456
+# Get ASSIGNEE_ID from git config
+# ASSIGNEE_ID can be set using "git config --worktree --add remote.origin.assigneeid <VALUE>"
+export ASSIGNEE_ID=$(git config --worktree --get remote.origin.assigneeid)
+
+# Validate ASSIGNEE_ID
+if [ "$ASSIGNEE_ID" = "" ]
+then
+  printf "${red}Error: ASSIGNEE_ID should not be empty.${no_color}\\n"
+  printf "\\n"
+  printf "You can set ASSIGNEE_ID using "'"git config --worktree --add remote.origin.assigneeid <VALUE>"'"\\n"
+  printf "Gitlab numeric User ID can be found on https://gitlab.com/api/v4/users?username=<USERNAME>\\n"
+
+  exit 2
+fi
+
 export REVIEWER_ID=567890
 
 # Data (-d) are optional except title, source_branch, and target_branch
