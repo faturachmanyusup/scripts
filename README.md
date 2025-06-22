@@ -24,6 +24,19 @@ To install, run:
 sudo ./install.sh
 ```
 
+## Updating
+To update the scripts to the latest version, you can use the update command:
+
+```bash
+sudo scripts update
+```
+
+The update process:
+- Downloads the latest version from the repository
+- Uninstalls the current version
+- Installs the new version
+- Requires root privileges to update
+
 ## Uninstallation
 To remove the scripts from your system, you can use the uninstall command:
 
