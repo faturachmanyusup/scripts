@@ -34,13 +34,6 @@ fi
 
 # Special case for update command
 if [ "$provider" = "update" ]; then
-  # Check if the script is run as root
-  if [ "$(id -u)" -ne 0 ]; then
-    printf "${red}Error: Update must be run as root.${default}\n"
-    printf "hint: sudo scripts update\n"
-    exit 1
-  fi
-  
   # Execute update script if it exists
   if [ -f "/usr/local/lib/scripts/update.sh" ]; then
     bash -i /usr/local/lib/scripts/update.sh "$@"
@@ -74,6 +67,7 @@ then
     [ -d "$dir" ] && echo "- $(basename "$dir")"
   done
   printf "- uninstall\\n"
+  printf "- update\\n"
 
   exit 2
 fi

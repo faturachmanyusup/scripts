@@ -32,7 +32,7 @@ sudo scripts update
 ```
 
 The update process:
-- Downloads the latest version from the repository
+- Downloads the latest version from GitHub
 - Uninstalls the current version
 - Installs the new version
 - Requires root privileges to update
