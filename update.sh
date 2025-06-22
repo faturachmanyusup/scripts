@@ -12,42 +12,62 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-# Define temporary directory and source URL
+# Create temporary directory
 TMP_DIR="/tmp/scripts"
-SOURCE_URL="https://github.com/faturachmanyusup/scripts/archive/refs/heads/main.zip"
+DOWNLOAD_URL="https://github.com/faturachmanyusup/scripts/archive/refs/heads/main.zip"
 ZIP_FILE="$TMP_DIR/scripts.zip"
 
-msg_success="✔\n"
-
-printf "Creating temporary directory   "
-# Create temporary directory if it doesn't exist
+# Create temp directory if it doesn't exist
+printf "Creating temporary directory... "
 mkdir -p "$TMP_DIR"
-printf "%b" "$msg_success"
+printf "✔\n"
 
-printf "Downloading latest version     "
 # Download the latest version
-curl -s -L "$SOURCE_URL" -o "$ZIP_FILE"
-printf "%b" "$msg_success"
+printf "Downloading latest version... "
+curl -s -L "$DOWNLOAD_URL" -o "$ZIP_FILE"
+if [ $? -ne 0 ]; then
+  printf "${red}Failed to download the latest version.${default}\n"
+  rm -rf "$TMP_DIR"
+  exit 1
+fi
+printf "✔\n"
 
-printf "Extracting files              "
-# Extract the downloaded zip file
+# Unzip the downloaded file
+printf "Extracting files... "
 unzip -q "$ZIP_FILE" -d "$TMP_DIR"
-printf "%b" "$msg_success"
+if [ $? -ne 0 ]; then
+  printf "${red}Failed to extract files.${default}\n"
+  rm -rf "$TMP_DIR"
+  exit 1
+fi
+printf "✔\n"
 
-printf "Uninstalling current version  "
-# Uninstall the current version
-bash -i /usr/local/lib/scripts/uninstall.sh
-printf "%b" "$msg_success"
+# Navigate to the extracted directory
+cd "$TMP_DIR/scripts-main" || {
+  printf "${red}Failed to navigate to extracted directory.${default}\n"
+  rm -rf "$TMP_DIR"
+  exit 1
+}
 
-printf "Installing new version        "
-# Navigate to the extracted directory and run the install script
-cd "$TMP_DIR/scripts-main" && bash -i ./install.sh > /dev/null
-printf "%b" "$msg_success"
+# Uninstall current version
+printf "Uninstalling current version... "
+scripts uninstall
+printf "✔\n"
 
-printf "Cleaning up                   "
-# Clean up the temporary directory
+# Install new version
+printf "Installing new version... "
+./install.sh
+if [ $? -ne 0 ]; then
+  printf "${red}Failed to install new version.${default}\n"
+  rm -rf "$TMP_DIR"
+  exit 1
+fi
+printf "✔\n"
+
+# Clean up
+printf "Cleaning up... "
 rm -rf "$TMP_DIR"
-printf "%b" "$msg_success"
+printf "✔\n"
 
 printf "${green}Scripts have been successfully updated to the latest version.${default}\n"
 
