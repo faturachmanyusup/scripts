@@ -34,14 +34,17 @@ printf "Extracting files              "
 unzip -q "$ZIP_FILE" -d "$TMP_DIR"
 printf "%b" "$msg_success"
 
+# Navigate to the extracted directory
+cd "$TMP_DIR/scripts-main"
+
 printf "Uninstalling current version  "
 # Uninstall the current version
-bash -i /usr/local/lib/scripts/uninstall.sh
+bash -i ./uninstall.sh > /dev/null
 printf "%b" "$msg_success"
 
 printf "Installing new version        "
-# Navigate to the extracted directory and run the install script
-cd "$TMP_DIR/scripts-main" && bash -i ./install.sh > /dev/null
+# Install the latest version
+bash -i ./install.sh > /dev/null
 printf "%b" "$msg_success"
 
 printf "Cleaning up                   "

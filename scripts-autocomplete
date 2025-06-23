@@ -11,7 +11,7 @@ _scripts_autocomplete() {
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
   # Get the list of providers (first argument suggestions)
-  local providers=$(ls -1 "$lib_path")
+  local providers=$(ls -1d "$lib_path"/*/ 2>/dev/null | xargs -n 1 basename)
   # Add uninstall and update commands to providers
   providers="$providers uninstall update"
 

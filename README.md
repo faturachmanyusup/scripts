@@ -124,6 +124,7 @@ Some unneccesary commands
 - `curl` for API requests
 - `jq` for JSON processing
 - `rsync` for installation
+- `unzip` for update process
 - Proper environment variables set for various integrations
 
 ## Environment Variables
