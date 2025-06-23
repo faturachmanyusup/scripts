@@ -32,7 +32,7 @@ usr_local=/usr/local/
 
 printf "Installing dependencies   "
 apt-get update -qq
-apt-get install -qq rsync curl jq unzip -y > /dev/null
+apt-get install -qq rsync curl jq -y > /dev/null
 printf "%b" "$msg_success"
 
 printf "Building resources        "

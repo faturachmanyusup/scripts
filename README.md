@@ -24,6 +24,19 @@ To install, run:
 sudo ./install.sh
 ```
 
+## Updating
+To update the scripts to the latest version, you can use the update command:
+
+```bash
+sudo scripts update
+```
+
+The update process:
+- Downloads the latest version from GitHub
+- Uninstalls the current version
+- Installs the new version
+- Requires root privileges to update
+
 ## Uninstallation
 To remove the scripts from your system, you can use the uninstall command:
 
@@ -38,21 +51,6 @@ Alternatively, you can run the uninstall script directly:
 ```bash
 sudo ./uninstall.sh
 ```
-
-## Update
-To update the scripts to the latest version, you can use the update command:
-
-```bash
-sudo scripts update
-```
-
-This will:
-- Download the latest version from the repository
-- Uninstall the current version
-- Install the new version
-- Clean up temporary files
-
-The update process does not depend on the local repository state and requires root access.
 
 ## Available Scripts
 
@@ -126,7 +124,6 @@ Some unneccesary commands
 - `curl` for API requests
 - `jq` for JSON processing
 - `rsync` for installation
-- `unzip` for update process
 - Proper environment variables set for various integrations
 
 ## Environment Variables
