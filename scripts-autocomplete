@@ -40,8 +40,26 @@ _scripts_autocomplete() {
 
   # Handle special case for gitlab mr-create command
   if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "gitlab" && "${COMP_WORDS[2]}" == "mr-create" ]]; then
-    # If previous word is mr-create or a branch name, suggest -m flag
-    if [[ "$prev" == "mr-create" || "$prev" != "-m" ]]; then
+    # Check if we're in a git repository
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+      # If previous word is -m, don't suggest branches (user is typing MR title)
+      if [[ "$prev" == "-m" ]]; then
+        return
+      fi
+      
+      # If current word is -m or starts with -, suggest -m flag
+      if [[ "$cur" == "-"* ]]; then
+        COMPREPLY=( $(compgen -W "-m" -- "$cur") )
+        return
+      fi
+      
+      # For any other position, suggest both branches and -m flag
+      local branches=$(git branch --format='%(refname:short)' 2>/dev/null)
+      local suggestions="$branches -m"
+      COMPREPLY=( $(compgen -W "$suggestions" -- "$cur") )
+      return
+    else
+      # Not in a git repository, just suggest -m flag
       COMPREPLY=( $(compgen -W "-m" -- "$cur") )
       return
     fi

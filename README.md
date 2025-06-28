@@ -138,6 +138,13 @@ The installation process sets up command auto-completion for easier script usage
 - `/etc/bash_completion.d/scripts-autocomplete`
 - Automatic registration in `.bashrc`
 
+### Git Branch Auto-completion
+When using the `gitlab mr-create` command, the auto-completion system will suggest available Git branches:
+- Shows a list of local branches if more than one branch matches the typed input
+- Automatically completes the branch name if only one match exists
+- Falls back gracefully if not in a Git repository
+- Works seamlessly with the `-m` flag for specifying MR titles
+
 ## Notes
 - All scripts are executable shell scripts
 - Each script performs input validation
