@@ -32,6 +32,19 @@ if [ "$provider" = "uninstall" ]; then
   exit 0
 fi
 
+# Special case for update command
+if [ "$provider" = "update" ]; then
+  # Execute update script if it exists
+  if [ -f "/usr/local/lib/scripts/update.sh" ]; then
+    bash -i /usr/local/lib/scripts/update.sh "$@"
+  else
+    printf "${red}Error: Update script not found.${default}\n"
+    exit 1
+  fi
+  
+  exit 0
+fi
+
 # validate command
 if [ -z "$provider" ] || [ -z "$action" ]
 then
@@ -39,6 +52,7 @@ then
   printf "Valid command:\\n"
   printf "scripts <provider> <action>\\n"
   printf "scripts uninstall [flags]\\n"
+  printf "scripts update\\n"
 
   exit 2
 fi
@@ -53,6 +67,7 @@ then
     [ -d "$dir" ] && echo "- $(basename "$dir")"
   done
   printf "- uninstall\\n"
+  printf "- update\\n"
 
   exit 2
 fi

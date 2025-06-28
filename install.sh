@@ -32,7 +32,7 @@ usr_local=/usr/local/
 
 printf "Installing dependencies   "
 apt-get update -qq
-apt-get install -qq rsync curl jq -y > /dev/null
+apt-get install -qq rsync curl jq unzip -y > /dev/null
 printf "%b" "$msg_success"
 
 printf "Building resources        "
@@ -56,6 +56,7 @@ find $usr_local/lib/scripts -type f -name "*.sh" -exec chmod +x {} \;
 chmod +x $usr_local/bin/scripts
 chmod +x /etc/bash_completion.d/scripts-autocomplete
 chmod +x $usr_local/lib/scripts/uninstall.sh
+chmod +x $usr_local/lib/scripts/update.sh
 printf "%b" "$msg_success"
 
 source "$BASHRC"
