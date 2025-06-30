@@ -40,8 +40,39 @@ _scripts_autocomplete() {
 
   # Handle special case for gitlab mr-create command
   if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "gitlab" && "${COMP_WORDS[2]}" == "mr-create" ]]; then
-    # If previous word is mr-create or a branch name, suggest -m flag
-    if [[ "$prev" == "mr-create" || "$prev" != "-m" ]]; then
+    # Check if we're in a Git repository
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+      # If previous word is -m, we're expecting a title (no completion)
+      if [[ "$prev" == "-m" ]]; then
+        return
+      fi
+      
+      # Check if we already have a branch name and -m flag in the command
+      local has_branch=false
+      local has_m_flag=false
+      for ((i=3; i<COMP_CWORD; i++)); do
+        if [[ "${COMP_WORDS[i]}" == "-m" ]]; then
+          has_m_flag=true
+          # Skip the argument after -m (the title)
+          ((i++))
+        elif [[ "${COMP_WORDS[i]}" != "-"* ]]; then
+          has_branch=true
+        fi
+      done
+      
+      # If we don't have a branch yet
+      if ! $has_branch; then
+        # Get list of local branches
+        local branches=$(git branch --format='%(refname:short)' 2>/dev/null)
+        COMPREPLY=( $(compgen -W "$branches" -- "$cur") )
+        return
+      # If we have a branch but no -m flag yet
+      elif ! $has_m_flag; then
+        COMPREPLY=( $(compgen -W "-m" -- "$cur") )
+        return
+      fi
+    else
+      # Not in a Git repository, just suggest -m flag
       COMPREPLY=( $(compgen -W "-m" -- "$cur") )
       return
     fi
