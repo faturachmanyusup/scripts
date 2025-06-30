@@ -60,17 +60,11 @@ _scripts_autocomplete() {
         fi
       done
       
-      # If we don't have a branch yet or we're currently typing it
-      if ! $has_branch || [[ "$prev" != "-m" && "$cur" != "-"* ]]; then
+      # If we don't have a branch yet
+      if ! $has_branch; then
         # Get list of local branches
         local branches=$(git branch --format='%(refname:short)' 2>/dev/null)
-        
-        # Offer both branches and -m flag as suggestions
-        if [[ "$cur" == "-"* ]]; then
-          COMPREPLY=( $(compgen -W "-m" -- "$cur") )
-        else
-          COMPREPLY=( $(compgen -W "$branches -m" -- "$cur") )
-        fi
+        COMPREPLY=( $(compgen -W "$branches" -- "$cur") )
         return
       # If we have a branch but no -m flag yet
       elif ! $has_m_flag; then
