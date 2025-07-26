@@ -23,7 +23,7 @@ if [ "$provider" = "uninstall" ]; then
   
   # Execute uninstall script if it exists
   if [ -f "/usr/local/lib/scripts/uninstall.sh" ]; then
-    bash -i /usr/local/lib/scripts/uninstall.sh "$@"
+    bash /usr/local/lib/scripts/uninstall.sh "$@"
   else
     printf "${red}Error: Uninstall script not found.${default}\n"
     exit 1
@@ -36,7 +36,7 @@ fi
 if [ "$provider" = "update" ]; then
   # Execute update script if it exists
   if [ -f "/usr/local/lib/scripts/update.sh" ]; then
-    bash -i /usr/local/lib/scripts/update.sh "$@"
+    bash /usr/local/lib/scripts/update.sh "$@"
   else
     printf "${red}Error: Update script not found.${default}\n"
     exit 1
@@ -86,6 +86,6 @@ then
 fi
 
 # execute file
-bash -i $lib_path/$provider/$action.sh "$@"
+bash $lib_path/$provider/$action.sh "$@"
 
 exit 0
