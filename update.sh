@@ -39,12 +39,12 @@ cd "$TMP_DIR/scripts-main"
 
 printf "Uninstalling current version  "
 # Uninstall the current version
-bash -i ./uninstall.sh > /dev/null
+bash ./uninstall.sh > /dev/null
 printf "%b" "$msg_success"
 
 printf "Installing new version        "
 # Install the latest version
-bash -i ./install.sh > /dev/null
+bash ./install.sh > /dev/null
 printf "%b" "$msg_success"
 
 printf "Cleaning up                   "

@@ -14,10 +14,11 @@ _remove_autocomplete_from_bashrc() {
     # Create a temporary file
     local TEMP_FILE=$(mktemp)
     
-    # Filter out the lines that source the autocomplete script
+    # Filter out the lines that source the autocomplete script and any orphaned fi
     grep -v "if \[ -f $AUTOCOMPLETE_SCRIPT \]; then" "$BASHRC" | \
     grep -v "  source $AUTOCOMPLETE_SCRIPT" | \
-    grep -v "fi # Added by scripts installer" > "$TEMP_FILE"
+    grep -v "fi # Added by scripts installer" | \
+    sed '/^fi$/d' > "$TEMP_FILE"
     
     # Replace the original .bashrc with our filtered version
     mv "$TEMP_FILE" "$BASHRC"
