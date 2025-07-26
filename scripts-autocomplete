@@ -78,6 +78,30 @@ _scripts_autocomplete() {
     fi
   fi
 
+  # Handle ClickUp task-get command flags
+  if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "clickup" && "${COMP_WORDS[2]}" == "task-get" ]]; then
+    COMPREPLY=( $(compgen -W "-l --list -t --team -a --assignees -s --status -me --only-me" -- "$cur") )
+    return
+  fi
+
+  # Handle ClickUp team-get command flags
+  if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "clickup" && "${COMP_WORDS[2]}" == "team-get" ]]; then
+    COMPREPLY=( $(compgen -W "-e --email -s --search -c --columns" -- "$cur") )
+    return
+  fi
+
+  # Handle ClickUp space-get command flags
+  if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "clickup" && "${COMP_WORDS[2]}" == "space-get" ]]; then
+    COMPREPLY=( $(compgen -W "-t --team" -- "$cur") )
+    return
+  fi
+
+  # Handle ClickUp list-get command flags
+  if [[ $COMP_CWORD -ge 3 && "${COMP_WORDS[1]}" == "clickup" && "${COMP_WORDS[2]}" == "list-get" ]]; then
+    COMPREPLY=( $(compgen -W "-s --space" -- "$cur") )
+    return
+  fi
+
   # Default to suggesting providers
   COMPREPLY=( $(compgen -W "$providers" -- "$cur") )
 }
