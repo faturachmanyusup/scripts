@@ -116,7 +116,8 @@ export REVIEWER_ID=567890
 
 # Build curl command with optional draft parameter
 CURL_OPTS=(
-  -s -X POST
+  -s
+  -X POST
   -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN"
   -d "title=$TITLE"
   -d "source_branch=$SOURCE_BRANCH"
