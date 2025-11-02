@@ -115,34 +115,26 @@ export REVIEWER_ID=567890
 # For more options https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
 
 # Build curl command with optional draft parameter
+CURL_OPTS=(
+  -s -X POST
+  -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN"
+  -d "title=$TITLE"
+  -d "source_branch=$SOURCE_BRANCH"
+  -d "target_branch=$TARGET_BRANCH"
+  -d "assignee_id=$ASSIGNEE_ID"
+  -d "reviewer_ids=$REVIEWER_ID"
+  -d "squash=true"
+  -d "remove_source_branch=true"
+)
+
 if [ "$DRAFT_FLAG" = "true" ]; then
-  export response=$(
-    curl -s -X POST \
-      -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
-      -d "title=$TITLE" \
-      -d "source_branch=$SOURCE_BRANCH" \
-      -d "target_branch=$TARGET_BRANCH" \
-      -d "assignee_id=$ASSIGNEE_ID" \
-      -d "reviewer_ids=$REVIEWER_ID" \
-      -d "squash=true" \
-      -d "remove_source_branch=true" \
-      -d "draft=true" \
-      "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
-  )
-else
-  export response=$(
-    curl -s -X POST \
-      -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
-      -d "title=$TITLE" \
-      -d "source_branch=$SOURCE_BRANCH" \
-      -d "target_branch=$TARGET_BRANCH" \
-      -d "assignee_id=$ASSIGNEE_ID" \
-      -d "reviewer_ids=$REVIEWER_ID" \
-      -d "squash=true" \
-      -d "remove_source_branch=true" \
-      "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
-  )
+  CURL_OPTS+=(-d "draft=true")
 fi
+
+export response=$(
+  curl "${CURL_OPTS[@]}" \
+    "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
+)
 
 mr_id=$(echo $response | jq -r '.iid')
 
