@@ -47,33 +47,46 @@ _scripts_autocomplete() {
         return
       fi
       
-      # Check if we already have a branch name and -m flag in the command
+      # Check if we already have a branch name, -m flag, and --draft flag in the command
       local has_branch=false
       local has_m_flag=false
+      local has_draft_flag=false
       for ((i=3; i<COMP_CWORD; i++)); do
         if [[ "${COMP_WORDS[i]}" == "-m" ]]; then
           has_m_flag=true
           # Skip the argument after -m (the title)
           ((i++))
+        elif [[ "${COMP_WORDS[i]}" == "--draft" ]]; then
+          has_draft_flag=true
         elif [[ "${COMP_WORDS[i]}" != "-"* ]]; then
           has_branch=true
         fi
       done
       
+      # Build suggestions for flags
+      local flag_suggestions=""
+      if ! $has_m_flag; then
+        flag_suggestions="$flag_suggestions -m"
+      fi
+      if ! $has_draft_flag; then
+        flag_suggestions="$flag_suggestions --draft"
+      fi
+      
       # If we don't have a branch yet
       if ! $has_branch; then
         # Get list of local branches
         local branches=$(git branch --format='%(refname:short)' 2>/dev/null)
-        COMPREPLY=( $(compgen -W "$branches" -- "$cur") )
+        # Combine branches with flag suggestions
+        COMPREPLY=( $(compgen -W "$branches $flag_suggestions" -- "$cur") )
         return
-      # If we have a branch but no -m flag yet
-      elif ! $has_m_flag; then
-        COMPREPLY=( $(compgen -W "-m" -- "$cur") )
+      # If we have a branch but there are still flags to suggest
+      elif [[ -n "$flag_suggestions" ]]; then
+        COMPREPLY=( $(compgen -W "$flag_suggestions" -- "$cur") )
         return
       fi
     else
-      # Not in a Git repository, just suggest -m flag
-      COMPREPLY=( $(compgen -W "-m" -- "$cur") )
+      # Not in a Git repository, just suggest flags
+      COMPREPLY=( $(compgen -W "-m --draft" -- "$cur") )
       return
     fi
   fi
