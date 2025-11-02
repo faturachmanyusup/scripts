@@ -12,6 +12,7 @@ Scripts can be run directly from the repository without installation:
 
 # Examples
 ./gitlab/mr-create.sh main -m "Fix user authentication"
+./gitlab/mr-create.sh --draft main -m "Work in progress feature"
 ./clickup/task-get.sh -t 987654321 -me -s "in progress"
 ./clickup/team-get.sh -s "john" -c "name,email"
 ```
@@ -24,7 +25,7 @@ For convenience, scripts can be installed system-wide to `/usr/local/lib/scripts
 scripts <provider> <action>
 
 # Examples after installation
-scripts gitlab mr-create <target_branch> [-m "MR Title"]
+scripts gitlab mr-create <target_branch> [-m "MR Title"] [--draft]
 scripts clickup task-get -t 987654321 -me -s "in progress"
 ```
 
@@ -80,13 +81,15 @@ A script to automate merge request creation in GitLab.
 - Extracts commit message as MR title by default
 - Supports custom MR title with -m flag
 - Supports custom target branch selection
+- Supports creating draft MRs with --draft flag
 - Requires `GITLAB_PRIVATE_TOKEN` environment variable
 - Uses git config for PROJECT_ID and ASSIGNEE_ID
 
 **Usage:**
 ```bash
-mr-create.sh [target-branch] [-m "MR Title"]
-mr-create.sh -m "MR Title" [target-branch]
+mr-create.sh [target-branch] [-m "MR Title"] [--draft]
+mr-create.sh -m "MR Title" [target-branch] [--draft]
+mr-create.sh --draft [target-branch] [-m "MR Title"]
 ```
 
 **Required Git Configuration:**
