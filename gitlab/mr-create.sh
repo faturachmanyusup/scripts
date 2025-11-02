@@ -74,6 +74,11 @@ else
   export TITLE=$(git log -1 --pretty=%B)
 fi
 
+# Add "Draft: " prefix if --draft flag is set
+if [ "$DRAFT_FLAG" = "true" ]; then
+  export TITLE="Draft: $TITLE"
+fi
+
 # Validate TARGET_BRANCH
 if [ "$TARGET_BRANCH" = "" ]
 then
@@ -113,27 +118,16 @@ export REVIEWER_ID=567890
 
 # Data (-d) are optional except title, source_branch, and target_branch
 # For more options https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
-
-# Build curl command with optional draft parameter
-CURL_OPTS=(
-  -s
-  -X POST
-  -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN"
-  -d "title=$TITLE"
-  -d "source_branch=$SOURCE_BRANCH"
-  -d "target_branch=$TARGET_BRANCH"
-  -d "assignee_id=$ASSIGNEE_ID"
-  -d "reviewer_ids=$REVIEWER_ID"
-  -d "squash=true"
-  -d "remove_source_branch=true"
-)
-
-if [ "$DRAFT_FLAG" = "true" ]; then
-  CURL_OPTS+=(-d "draft=true")
-fi
-
 export response=$(
-  curl "${CURL_OPTS[@]}" \
+  curl -s -X POST \
+    -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
+    -d "title=$TITLE" \
+    -d "source_branch=$SOURCE_BRANCH" \
+    -d "target_branch=$TARGET_BRANCH" \
+    -d "assignee_id=$ASSIGNEE_ID" \
+    -d "reviewer_ids=$REVIEWER_ID" \
+    -d "squash=true" \
+    -d "remove_source_branch=true" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
 )
 
