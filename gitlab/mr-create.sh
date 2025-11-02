@@ -34,6 +34,7 @@ export SOURCE_BRANCH=$(git branch --show-current)
 # Parse arguments
 CUSTOM_TITLE=""
 TARGET_BRANCH=""
+DRAFT_FLAG=""
 
 # Check if script is invoked directly or through the scripts command
 if [ "$0" == "mr-create.sh" ]; then
@@ -56,6 +57,9 @@ while [ $i -lt ${#args[@]} ]; do
       printf "${red}Error: -m flag requires a title argument.${no_color}\\n"
       exit 2
     fi
+  elif [ "${args[$i]}" == "--draft" ]; then
+    # Set draft flag
+    DRAFT_FLAG="true"
   elif [ -z "$TARGET_BRANCH" ]; then
     # First non-flag argument is the target branch
     TARGET_BRANCH="${args[$i]}"
@@ -76,12 +80,14 @@ then
   printf "${red}Error: TARGET_BRANCH should not be empty.${no_color}\\n"
   printf "\\n"
   printf "With installation:\\n"
-  printf "  scripts gitlab mr-create <TARGET_BRANCH> [-m \"MR Title\"]\\n"
-  printf "  scripts gitlab mr-create -m \"MR Title\" <TARGET_BRANCH>\\n"
+  printf "  scripts gitlab mr-create <TARGET_BRANCH> [-m \"MR Title\"] [--draft]\\n"
+  printf "  scripts gitlab mr-create -m \"MR Title\" <TARGET_BRANCH> [--draft]\\n"
+  printf "  scripts gitlab mr-create --draft <TARGET_BRANCH> [-m \"MR Title\"]\\n"
   printf "\\n"
   printf "Without installation:\\n"
-  printf "  . mr-create.sh <TARGET_BRANCH> [-m \"MR Title\"]\\n"
-  printf "  . mr-create.sh -m \"MR Title\" <TARGET_BRANCH>\\n"
+  printf "  . mr-create.sh <TARGET_BRANCH> [-m \"MR Title\"] [--draft]\\n"
+  printf "  . mr-create.sh -m \"MR Title\" <TARGET_BRANCH> [--draft]\\n"
+  printf "  . mr-create.sh --draft <TARGET_BRANCH> [-m \"MR Title\"]\\n"
 
   exit 2
 fi
@@ -107,18 +113,36 @@ export REVIEWER_ID=567890
 
 # Data (-d) are optional except title, source_branch, and target_branch
 # For more options https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
-export response=$(
-  curl -s -X POST \
-    -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
-    -d "title=$TITLE" \
-    -d "source_branch=$SOURCE_BRANCH" \
-    -d "target_branch=$TARGET_BRANCH" \
-    -d "assignee_id=$ASSIGNEE_ID" \
-    -d "reviewer_ids=$REVIEWER_ID" \
-    -d "squash=true" \
-    -d "remove_source_branch=true" \
-    "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
-)
+
+# Build curl command with optional draft parameter
+if [ "$DRAFT_FLAG" = "true" ]; then
+  export response=$(
+    curl -s -X POST \
+      -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
+      -d "title=$TITLE" \
+      -d "source_branch=$SOURCE_BRANCH" \
+      -d "target_branch=$TARGET_BRANCH" \
+      -d "assignee_id=$ASSIGNEE_ID" \
+      -d "reviewer_ids=$REVIEWER_ID" \
+      -d "squash=true" \
+      -d "remove_source_branch=true" \
+      -d "draft=true" \
+      "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
+  )
+else
+  export response=$(
+    curl -s -X POST \
+      -H "PRIVATE-TOKEN: $GITLAB_PRIVATE_TOKEN" \
+      -d "title=$TITLE" \
+      -d "source_branch=$SOURCE_BRANCH" \
+      -d "target_branch=$TARGET_BRANCH" \
+      -d "assignee_id=$ASSIGNEE_ID" \
+      -d "reviewer_ids=$REVIEWER_ID" \
+      -d "squash=true" \
+      -d "remove_source_branch=true" \
+      "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
+  )
+fi
 
 mr_id=$(echo $response | jq -r '.iid')
 
@@ -148,7 +172,11 @@ path=${repo_url:start_idx:-4}
 mr_link="https://gitlab.com/$path/-/merge_requests/$mr_id"
 
 # Print it to terminal / bash
-printf "MR successfully created. Your MR ready on:\\n"
+if [ "$DRAFT_FLAG" = "true" ]; then
+  printf "Draft MR successfully created. Your MR ready on:\\n"
+else
+  printf "MR successfully created. Your MR ready on:\\n"
+fi
 printf "\\n"
 printf "$mr_link\\n"
 
