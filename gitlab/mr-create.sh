@@ -35,6 +35,7 @@ export SOURCE_BRANCH=$(git branch --show-current)
 CUSTOM_TITLE=""
 TARGET_BRANCH=""
 DRAFT_FLAG=""
+SQUASH_ENABLED="true"
 
 # Check if script is invoked directly or through the scripts command
 if [ "$0" == "mr-create.sh" ]; then
@@ -60,6 +61,9 @@ while [ $i -lt ${#args[@]} ]; do
   elif [ "${args[$i]}" == "--draft" ]; then
     # Set draft flag
     DRAFT_FLAG="true"
+  elif [ "${args[$i]}" == "--no-squash" ]; then
+    # Disable squash
+    SQUASH_ENABLED="false"
   elif [ -z "$TARGET_BRANCH" ]; then
     # First non-flag argument is the target branch
     TARGET_BRANCH="${args[$i]}"
@@ -85,14 +89,14 @@ then
   printf "${red}Error: TARGET_BRANCH should not be empty.${no_color}\\n"
   printf "\\n"
   printf "With installation:\\n"
-  printf "  scripts gitlab mr-create <TARGET_BRANCH> [-m \"MR Title\"] [--draft]\\n"
-  printf "  scripts gitlab mr-create -m \"MR Title\" <TARGET_BRANCH> [--draft]\\n"
-  printf "  scripts gitlab mr-create --draft <TARGET_BRANCH> [-m \"MR Title\"]\\n"
+  printf "  scripts gitlab mr-create <TARGET_BRANCH> [-m \"MR Title\"] [--draft] [--no-squash]\\n"
+  printf "  scripts gitlab mr-create -m \"MR Title\" <TARGET_BRANCH> [--draft] [--no-squash]\\n"
+  printf "  scripts gitlab mr-create --draft <TARGET_BRANCH> [-m \"MR Title\"] [--no-squash]\\n"
   printf "\\n"
   printf "Without installation:\\n"
-  printf "  . mr-create.sh <TARGET_BRANCH> [-m \"MR Title\"] [--draft]\\n"
-  printf "  . mr-create.sh -m \"MR Title\" <TARGET_BRANCH> [--draft]\\n"
-  printf "  . mr-create.sh --draft <TARGET_BRANCH> [-m \"MR Title\"]\\n"
+  printf "  . mr-create.sh <TARGET_BRANCH> [-m \"MR Title\"] [--draft] [--no-squash]\\n"
+  printf "  . mr-create.sh -m \"MR Title\" <TARGET_BRANCH> [--draft] [--no-squash]\\n"
+  printf "  . mr-create.sh --draft <TARGET_BRANCH> [-m \"MR Title\"] [--no-squash]\\n"
 
   exit 2
 fi
@@ -126,7 +130,7 @@ export response=$(
     -d "target_branch=$TARGET_BRANCH" \
     -d "assignee_id=$ASSIGNEE_ID" \
     -d "reviewer_ids=$REVIEWER_ID" \
-    -d "squash=true" \
+    -d "squash=$SQUASH_ENABLED" \
     -d "remove_source_branch=true" \
     "https://gitlab.com/api/v4/projects/$PROJECT_ID/merge_requests?private_token=$GITLAB_PRIVATE_TOKEN"
 )
