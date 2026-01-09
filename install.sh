@@ -39,6 +39,7 @@ printf "Building resources        "
 mkdir -p $usr_local/lib/scripts  # Ensure the directory exists
 rsync -a . $usr_local/lib/scripts \
   --exclude=".git" \
+  --exclude=".github" \
   --exclude="*.png" \
   --exclude="README.md" \
   --exclude="install.sh" \
